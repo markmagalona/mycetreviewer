@@ -156,7 +156,7 @@ For passage-based items, the first item must have correct_index: -1 and choices:
   try {
     const model = gemini.getGenerativeModel({
       model: 'gemini-2.5-flash',
-      generationConfig: { temperature: 0.2, maxOutputTokens: 8192, thinkingConfig: { thinkingBudget: 0 } },
+      generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
     })
     const result = await model.generateContent(prompt)
     const text   = result.response.text()
