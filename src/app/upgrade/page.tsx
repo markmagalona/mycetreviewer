@@ -1,11 +1,12 @@
 'use client'
 export const dynamic = 'force-dynamic'
 // src/app/upgrade/page.tsx
-// Only lists features that are actually built
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
+
+declare global { interface Window { fbq?: (...args: any[]) => void } }
 
 const FEATURES = [
   { icon: '🎓', text: 'All 6 admission tests — UPCAT, ACET, DCAT, USTET, PUPCET, State U CET' },
@@ -15,30 +16,21 @@ const FEATURES = [
   { icon: '⚡', text: '20 AI training sessions per day (free: 10)' },
   { icon: '🔁', text: 'Wrong answer review after mock and training sessions' },
   { icon: '🏆', text: 'XP system, ranks, and weekly leaderboard' },
-  { icon: '📅', text: 'Exam countdown and daily study tracking' },
+  { icon: '📅', text: 'AI-generated 30-day personalized study plan' },
 ]
 
 export default function UpgradePage() {
   const { user } = useAuth()
-  const [submitted, setSubmitted] = useState(false)
-  const [gcashName, setGcashName] = useState('')
-  const [gcashRef,  setGcashRef]  = useState('')
-  const [screenshot, setScreenshot] = useState<File|null>(null)
-  const [screenshotPreview, setScreenshotPreview] = useState('')
-  const [loading,   setLoading]   = useState(false)
-  const [error,     setError]     = useState('')
+  const [submitted,        setSubmitted]        = useState(false)
+  const [gcashName,        setGcashName]        = useState('')
+  const [gcashRef,         setGcashRef]         = useState('')
+  const [screenshot,       setScreenshot]       = useState<File|null>(null)
+  const [screenshotPreview,setScreenshotPreview]= useState('')
+  const [loading,          setLoading]          = useState(false)
+  const [error,            setError]            = useState('')
 
   if (user?.isPaid) {
-    function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setScreenshot(file)
-    const reader = new FileReader()
-    reader.onload = ev => setScreenshotPreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
-  }
-
-  return (
+    return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-4xl mb-4">✅</div>
@@ -52,6 +44,16 @@ export default function UpgradePage() {
     )
   }
 
+  function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) { setError('Screenshot must be under 5MB.'); return }
+    setScreenshot(file)
+    const reader = new FileReader()
+    reader.onload = ev => setScreenshotPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!gcashName.trim() || !gcashRef.trim()) {
@@ -59,31 +61,58 @@ export default function UpgradePage() {
       return
     }
     setLoading(true); setError('')
+
     try {
+      // Upload screenshot if provided
+      let screenshotUrl = ''
+      if (screenshot) {
+        const formData = new FormData()
+        formData.append('file', screenshot)
+        formData.append('userId', user?.id || 'guest')
+        formData.append('ref', gcashRef.trim())
+        const uploadRes = await fetch('/api/payment/upload-proof', {
+          method: 'POST',
+          body: formData,
+        })
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json()
+          screenshotUrl = uploadData.url || ''
+        }
+      }
+
+      // Submit payment
       const res = await fetch('/api/payment/submit', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          userId:    user?.id || '',
-          email:     user?.email || '',
-          gcashName: gcashName.trim(),
-          gcashRef:  gcashRef.trim(),
-          amount:    500,
+        body: JSON.stringify({
+          userId:        user?.id || '',
+          email:         user?.email || '',
+          gcashName:     gcashName.trim(),
+          gcashRef:      gcashRef.trim(),
+          amount:        500,
+          screenshotUrl,
         }),
       })
-      if (res.ok) setSubmitted(true)
-      else { const d = await res.json(); setError(d.error || 'Submission failed.') }
-    } catch { setError('Network error. Please try again.') }
-    finally { setLoading(false) }
-  }
 
-  function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setScreenshot(file)
-    const reader = new FileReader()
-    reader.onload = ev => setScreenshotPreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
+      if (res.ok) {
+        // Fire Meta Pixel Purchase event
+        if (typeof window !== 'undefined' && window.fbq) {
+          window.fbq('track', 'Purchase', {
+            value: 500,
+            currency: 'PHP',
+            content_name: 'MyCETReviewer Full Access',
+          })
+        }
+        setSubmitted(true)
+      } else {
+        const d = await res.json()
+        setError(d.error || 'Submission failed.')
+      }
+    } catch {
+      setError('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -97,7 +126,6 @@ export default function UpgradePage() {
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-
         {/* Price card */}
         <div className="bg-gray-900 rounded-3xl p-6 mb-8 text-center">
           <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">Full Access</div>
@@ -125,24 +153,23 @@ export default function UpgradePage() {
             <div className="text-3xl mb-3">✅</div>
             <div className="text-lg font-black text-green-900 mb-2">Payment submitted!</div>
             <div className="text-sm text-green-700 leading-relaxed mb-4">
-              We'll verify your GCash or Instapay payment and activate your access within a few minutes.
-              You'll be able to refresh and start training shortly.
+              We'll verify your payment and activate your access within a few minutes.
             </div>
-            <Link href="/dashboard"
-              className="inline-block bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+            <Link href="/dashboard" className="inline-block bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
               Back to Dashboard
             </Link>
           </div>
         ) : (
           <div className="border border-gray-200 rounded-2xl p-6">
             <h2 className="text-base font-black text-gray-900 mb-1">Pay via GCash or Instapay</h2>
-            <p className="text-sm text-gray-500 mb-5">Send ₱500 to our GCash or Instapay number, then submit your reference number below.</p>
+            <p className="text-sm text-gray-500 mb-5">Scan the QR code or send to our number, then submit your reference number below.</p>
 
-            {/* GCash / Instapay QR + number */}
+            {/* QR Code */}
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 text-center">
-              <div className="text-xs text-gray-500 uppercase tracking-wide mb-3">Scan QR or send to number</div>
-              <img src="/gcash-qr.png" alt="GCash / Instapay QR Code" className="w-48 h-48 mx-auto mb-3 rounded-xl object-contain"/>
-              <div className="text-xs text-gray-500 mt-1">Scan QR to pay · MyCETReviewer</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-3">Scan QR to Pay</div>
+              <img src="/gcash-qr.png" alt="GCash / Instapay QR Code"
+                className="w-48 h-48 mx-auto mb-3 rounded-xl object-contain bg-white p-2"/>
+              <div className="text-xs text-gray-500 mt-1">MyCETReviewer · GCash or Instapay</div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -150,7 +177,13 @@ export default function UpgradePage() {
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   Your GCash / Instapay Account Name
                 </label>
-                <input type="text" value={gcashName} onChange={e => setGcashName(e.target.value)}
+                <input type="text" value={gcashName} onChange={e => {
+                  setGcashName(e.target.value)
+                  // Fire Lead event when user starts filling in their name
+                  if (e.target.value.length === 1 && typeof window !== 'undefined' && window.fbq) {
+                    window.fbq('track', 'Lead', { content_name: 'Upgrade Page Payment Form' })
+                  }
+                }}
                   placeholder="As it appears in GCash or Instapay" required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
               </div>
@@ -162,6 +195,7 @@ export default function UpgradePage() {
                   placeholder="Reference number from GCash or Instapay" required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
               </div>
+
               {/* Screenshot upload */}
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
@@ -180,7 +214,7 @@ export default function UpgradePage() {
                   <input type="file" accept="image/*" onChange={handleScreenshot} className="hidden"/>
                 </label>
                 {screenshotPreview && (
-                  <button type="button" onClick={()=>{setScreenshot(null);setScreenshotPreview('')}}
+                  <button type="button" onClick={() => { setScreenshot(null); setScreenshotPreview('') }}
                     className="text-xs text-gray-400 hover:text-red-500 mt-1">
                     Remove screenshot
                   </button>
@@ -192,7 +226,7 @@ export default function UpgradePage() {
                 className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-black py-4 rounded-2xl transition-colors">
                 {loading ? 'Submitting...' : 'Submit Payment →'}
               </button>
-              <p className="text-xs text-gray-400 text-center">Access activated immediately after verification · Usually within 5 minutes</p>
+              <p className="text-xs text-gray-400 text-center">Access activated within 5 minutes after verification</p>
             </form>
           </div>
         )}
@@ -201,6 +235,13 @@ export default function UpgradePage() {
           <Link href="/diagnostic" className="text-sm text-gray-400 hover:text-gray-600">
             Try the free diagnostic first →
           </Link>
+        </div>
+
+        {/* Legal links */}
+        <div className="mt-8 pt-6 border-t border-gray-100 flex justify-center gap-4 text-xs text-gray-400">
+          <Link href="/privacy" className="hover:text-gray-600">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-gray-600">Terms of Use</Link>
+          <Link href="/contact" className="hover:text-gray-600">Contact</Link>
         </div>
       </div>
     </div>

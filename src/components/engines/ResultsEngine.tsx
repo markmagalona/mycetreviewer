@@ -146,7 +146,14 @@ export default function ResultsEngine() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       })
-      if (res.ok) { setUnlocked(true); localStorage.setItem('userEmail', email.trim().toLowerCase()) }
+      if (res.ok) {
+        setUnlocked(true)
+        localStorage.setItem('userEmail', email.trim().toLowerCase())
+        // Fire Meta Pixel Lead event
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'Lead', { content_name: 'Diagnostic Results Email Capture' })
+        }
+      }
       else { const d = await res.json(); setError(d.error || 'Something went wrong.') }
     } catch { setError('Network error.') }
     finally { setLoading(false) }
