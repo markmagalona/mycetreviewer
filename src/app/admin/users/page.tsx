@@ -1,8 +1,9 @@
-export const dynamic = 'force-dynamic'
 // src/app/admin/users/page.tsx
 
 import { createAdminClient } from '@/lib/supabase/server'
 
+
+export const dynamic = 'force-dynamic'
 async function getUsers() {
   const supabase = createAdminClient()
   const { data } = await supabase

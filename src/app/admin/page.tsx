@@ -1,10 +1,11 @@
-export const dynamic = 'force-dynamic'
 // src/app/admin/page.tsx
 // Admin dashboard with metrics + quick actions for testing
 
 import { createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
+
+export const dynamic = 'force-dynamic'
 async function getMetrics() {
   const supabase = createAdminClient()
   const today    = new Date().toISOString().split('T')[0]

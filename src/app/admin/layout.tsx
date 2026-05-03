@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+
+export const dynamic = 'force-dynamic'
 const NAV = [
   { href:'/admin',           label:'Dashboard',    icon:'📊' },
   { href:'/admin/payments',  label:'Payments',     icon:'💳' },
@@ -13,6 +15,7 @@ const NAV = [
   { href:'/admin/flagged',   label:'Flagged',      icon:'🚩' },
   { href:'/admin/ai-monitor',label:'AI Monitor',   icon:'🤖' },
 ]
+
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()

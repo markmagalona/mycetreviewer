@@ -1,8 +1,9 @@
-export const dynamic = 'force-dynamic'
 // src/app/admin/flagged/page.tsx
 
 import { createAdminClient } from '@/lib/supabase/server'
 
+
+export const dynamic = 'force-dynamic'
 async function getFlaggedQuestions() {
   const supabase = createAdminClient()
   const { data } = await supabase

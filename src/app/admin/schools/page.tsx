@@ -1,10 +1,11 @@
-export const dynamic = 'force-dynamic'
 // src/app/admin/schools/page.tsx
 // Schools are auto-approved on submission — this is the review queue
 // Admin rejects incorrect ones (wrong name, doesn't exist, duplicate)
 
 import { createAdminClient } from '@/lib/supabase/server'
 
+
+export const dynamic = 'force-dynamic'
 async function getSchools() {
   const supabase = createAdminClient()
   const [communityRes, verifiedRes] = await Promise.all([

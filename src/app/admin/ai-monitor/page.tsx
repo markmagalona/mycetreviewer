@@ -1,9 +1,10 @@
-export const dynamic = 'force-dynamic'
 // src/app/admin/ai-monitor/page.tsx
 // Shows AI generation stats, recent generations, pass/fail rates, cost tracking
 
 import { createAdminClient } from '@/lib/supabase/server'
 
+
+export const dynamic = 'force-dynamic'
 async function getAIStats() {
   const supabase = createAdminClient()
   const today    = new Date().toISOString().split('T')[0]

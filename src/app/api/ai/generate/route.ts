@@ -264,3 +264,5 @@ async function logGeneration(
     total_cost_usd:       geminiCost + gptCost,
   })
 }
+
+export const maxDuration = 60
