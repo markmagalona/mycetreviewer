@@ -206,9 +206,6 @@ export default function ProfilePage() {
                 <div className="text-sm font-bold text-gray-900">Dark mode</div>
                 <div className="text-xs text-gray-500 mt-0.5">Easy on the eyes during late-night study</div>
               </div>
-              <button onClick={e=>{e.preventDefault();toggleDark()}}
-                className={`relative w-12 h-6 rounded-full transition-colors ${isDark?'bg-red-600':'bg-gray-200'}`}>
-                <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isDark?'translate-x-6':'translate-x-0.5'}`}/>
               </button>
             </div>
 
