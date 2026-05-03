@@ -2,6 +2,24 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
+// Detect passage items — AI marks them with PASSAGE: prefix OR correct_index -1
+function isPassageItem(q: any): boolean {
+  const text = (q.question || q.passage || '').toString()
+  return (
+    text.toUpperCase().startsWith('PASSAGE:') ||
+    q.correct_index === -1 ||
+    q.correct === -1 ||
+    q.type === 'passage' ||
+    q.isPassage === true
+  )
+}
+
+// Get clean passage text
+function getPassageText(q: any): string {
+  const text = (q.question || '').toString()
+  return text.replace(/^PASSAGE:\s*/i, '').trim()
+}
+
 function normalizeQuestion(q: any) {
   return {
     ...q,
@@ -9,31 +27,31 @@ function normalizeQuestion(q: any) {
     difficulty: q.difficulty || 'medium',
     subject:    q.subject    || 'General',
     topic:      q.topic      || 'General',
-    isPassage:  q.correct_index === -1 || q.correct === -1,
+    isPassage:  isPassageItem(q),
   }
 }
 
 const SEED: any[] = [
-  { id:'u1',  subject:'Mathematics',          topic:'Algebra',            difficulty:'medium', question:'If 3(2x − 1) = 2(x + 5), what is x?',                                                           choices:['x = 2','x = 13/4','x = 3','x = 4'],                                                                                                                  correct:1, explanation:'Expand: 6x − 3 = 2x + 10. 4x = 13. x = 13/4.' },
-  { id:'u2',  subject:'Mathematics',          topic:'Statistics',         difficulty:'hard',   question:'Mean of 5 numbers is 12. One removed, new mean is 14. What was removed?',                       choices:['4','2','6','8'],                                                                                                                                      correct:0, explanation:'Sum=60. New sum=56. Removed=4.' },
-  { id:'u3',  subject:'Language Proficiency', topic:'Grammar',            difficulty:'hard',   question:'Which sentence is CORRECT?',                                                                    choices:['Neither the captain nor the players was ready.','Neither the captain nor the players were ready.','Neither the captain nor the players are not ready.','Neither and the players were ready.'], correct:1, explanation:"With neither…nor, agree with nearest subject." },
-  { id:'u4',  subject:'Reading Comprehension',topic:'Inference',          difficulty:'hard',   question:"'Researchers who spent decades defending a theory fiercely opposed the young scientist.' Inferred:", choices:['They protected their reputation.','They had not read her paper.','They found errors.','They were envious.'],                                         correct:0, explanation:"'Decades defending' implies investment." },
-  { id:'u5',  subject:'Science',              topic:'Cell Biology',       difficulty:'medium', question:'A cell has no membrane-bound nucleus. What type?',                                              choices:['Eukaryotic','Prokaryotic','Somatic','Gametic'],                                                                                                       correct:1, explanation:'Prokaryotic cells lack a membrane-bound nucleus.' },
-  { id:'u6',  subject:'Science',              topic:'Physics',            difficulty:'easy',   question:'A 5 kg object is pushed with 20 N net force. Acceleration?',                                   choices:['4 m/s²','100 m/s²','0.25 m/s²','2 m/s²'],                                                                                                           correct:0, explanation:'F=ma → a=20÷5=4 m/s².' },
-  { id:'u7',  subject:'Mathematics',          topic:'Geometry',           difficulty:'medium', question:'A triangle has sides 5, 12, and 13. What is its area?',                                        choices:['30 cm²','60 cm²','65 cm²','32.5 cm²'],                                                                                                               correct:0, explanation:'Right triangle. Area = ½ × 5 × 12 = 30 cm².' },
-  { id:'u8',  subject:'Language Proficiency', topic:'Vocabulary',         difficulty:'hard',   question:"'The senator gave an equivocal response.' Equivocal means:",                                   choices:['Definitive','Open to more than one interpretation','Hostile','Lengthy'],                                                                              correct:1, explanation:'Equivocal = deliberately unclear.' },
-  { id:'u9',  subject:'Science',              topic:'Genetics',           difficulty:'medium', question:'In a Tt × Tt cross, fraction of homozygous recessive (tt)?',                                   choices:['1/4','1/2','3/4','1/3'],                                                                                                                             correct:0, explanation:'Punnett square: tt = 1/4.' },
-  { id:'u10', subject:'Reading Comprehension',topic:'Tone',               difficulty:'medium', question:"'Industry leaders greeted the policy with cautious optimism.' Tone is:",                       choices:['Enthusiastically positive','Neutral to mildly positive','Critical','Ironic'],                                                                        correct:1, explanation:"'Cautious optimism' = qualified positivity." },
-  { id:'u11', subject:'Mathematics',          topic:'Patterns',           difficulty:'medium', question:'Next: 2, 6, 12, 20, 30, ___',                                                                  choices:['42','40','36','44'],                                                                                                                                  correct:0, explanation:'Differences: 4,6,8,10,12. Next: 30+12=42.' },
-  { id:'u12', subject:'Science',              topic:'Chemistry',          difficulty:'easy',   question:'Moles in 44g of CO₂? (C=12, O=16)',                                                           choices:['1 mol','2 mol','0.5 mol','44 mol'],                                                                                                                  correct:0, explanation:'Molar mass=44. 44÷44=1 mol.' },
-  { id:'u13', subject:'Language Proficiency', topic:'Verb Tense',         difficulty:'hard',   question:"Complete: 'By the time she arrives, I _____ dinner.'",                                         choices:['finished','will have finished','have finished','was finishing'],                                                                                      correct:1, explanation:"Future perfect: 'will have + past participle'." },
-  { id:'u14', subject:'Science',              topic:'Ecology',            difficulty:'medium', question:'Food chain: grass→rabbit→fox→wolf. Wolves disappear, what happens FIRST?',                    choices:['Grass increases','Fox population increases','Rabbit decreases','Grass decreases'],                                                                    correct:1, explanation:'Remove wolves → fox population rises first.' },
-  { id:'u15', subject:'Mathematics',          topic:'Word Problems',      difficulty:'hard',   question:'Car: Manila→Batangas 2hrs at 90kph. Return at 60kph. Average speed?',                         choices:['75 kph','72 kph','68 kph','80 kph'],                                                                                                                  correct:1, explanation:'Harmonic mean: 2÷(1/90+1/60)=72 kph.' },
-  { id:'u16', subject:'Reading Comprehension',topic:'Figurative Language', difficulty:'medium', question:"Victories described as 'hollow' suggests:",                                                   choices:['Dishonest','Empty of real meaning','Few celebrated','Minor'],                                                                                        correct:1, explanation:"'Hollow' = no real substance." },
-  { id:'u17', subject:'Science',              topic:'Scientific Method',  difficulty:'easy',   question:"In a plant growth experiment, 'amount of light per day' is:",                                  choices:['Dependent variable','Independent variable','Controlled variable','Hypothesis'],                                                                       correct:1, explanation:'Independent variable = what experimenter changes.' },
-  { id:'u18', subject:'Mathematics',          topic:'Algebra',            difficulty:'hard',   question:'Product of roots of 2x² − 5x + 3 = 0?',                                                      choices:['3/2','5/2','−3/2','5'],                                                                                                                              correct:0, explanation:"Vieta's: product = c/a = 3/2." },
-  { id:'u19', subject:'Language Proficiency', topic:'Modifiers',          difficulty:'hard',   question:'Which has a DANGLING MODIFIER?',                                                               choices:['Having studied all night, the exam seemed easy to Maria.','After finishing her review, Maria found the exam easy.','Maria, who studied, found the exam easy.','The exam was easy because Maria studied.'], correct:0, explanation:"'Having studied' should modify Maria, not 'the exam'." },
-  { id:'u20', subject:'Science',              topic:'Physics',            difficulty:'medium', question:"Newton's 3rd Law: when you push a wall, the wall:",                                            choices:['Does nothing','Pushes back with equal force','Pushes back with less force','Absorbs the force'],                                                     correct:1, explanation:'Every action has an equal and opposite reaction.' },
+  { id:'u1',  subject:'Mathematics',           topic:'Algebra',            difficulty:'medium', question:'If 3(2x − 1) = 2(x + 5), what is x?',                                                           choices:['x = 2','x = 13/4','x = 3','x = 4'],                                                                                                                  correct:1, explanation:'Expand: 6x − 3 = 2x + 10. 4x = 13. x = 13/4.' },
+  { id:'u2',  subject:'Mathematics',           topic:'Statistics',         difficulty:'hard',   question:'Mean of 5 numbers is 12. One removed, new mean is 14. What was removed?',                       choices:['4','2','6','8'],                                                                                                                                      correct:0, explanation:'Sum=60. New sum=56. Removed=4.' },
+  { id:'u3',  subject:'Language Proficiency',  topic:'Grammar',            difficulty:'hard',   question:'Which sentence is CORRECT?',                                                                    choices:['Neither the captain nor the players was ready.','Neither the captain nor the players were ready.','Neither the captain nor the players are not ready.','Neither and the players were ready.'], correct:1, explanation:"With neither…nor, agree with nearest subject." },
+  { id:'u4',  subject:'Reading Comprehension', topic:'Inference',          difficulty:'hard',   question:"'Researchers who spent decades defending a theory fiercely opposed the young scientist.' Inferred:", choices:['They protected their reputation.','They had not read her paper.','They found errors.','They were envious.'],                                         correct:0, explanation:"'Decades defending' implies investment." },
+  { id:'u5',  subject:'Science',               topic:'Cell Biology',       difficulty:'medium', question:'A cell has no membrane-bound nucleus. What type?',                                              choices:['Eukaryotic','Prokaryotic','Somatic','Gametic'],                                                                                                       correct:1, explanation:'Prokaryotic cells lack a membrane-bound nucleus.' },
+  { id:'u6',  subject:'Science',               topic:'Physics',            difficulty:'easy',   question:'A 5 kg object is pushed with 20 N net force. Acceleration?',                                   choices:['4 m/s²','100 m/s²','0.25 m/s²','2 m/s²'],                                                                                                           correct:0, explanation:'F=ma → a=20÷5=4 m/s².' },
+  { id:'u7',  subject:'Mathematics',           topic:'Geometry',           difficulty:'medium', question:'A triangle has sides 5, 12, and 13. What is its area?',                                        choices:['30 cm²','60 cm²','65 cm²','32.5 cm²'],                                                                                                               correct:0, explanation:'Right triangle. Area = ½ × 5 × 12 = 30 cm².' },
+  { id:'u8',  subject:'Language Proficiency',  topic:'Vocabulary',         difficulty:'hard',   question:"'The senator gave an equivocal response.' Equivocal means:",                                   choices:['Definitive','Open to more than one interpretation','Hostile','Lengthy'],                                                                              correct:1, explanation:'Equivocal = deliberately unclear.' },
+  { id:'u9',  subject:'Science',               topic:'Genetics',           difficulty:'medium', question:'In a Tt × Tt cross, fraction of homozygous recessive (tt)?',                                   choices:['1/4','1/2','3/4','1/3'],                                                                                                                             correct:0, explanation:'Punnett square: tt = 1/4.' },
+  { id:'u10', subject:'Reading Comprehension', topic:'Tone',               difficulty:'medium', question:"'Industry leaders greeted the policy with cautious optimism.' Tone is:",                       choices:['Enthusiastically positive','Neutral to mildly positive','Critical','Ironic'],                                                                        correct:1, explanation:"'Cautious optimism' = qualified positivity." },
+  { id:'u11', subject:'Mathematics',           topic:'Patterns',           difficulty:'medium', question:'Next: 2, 6, 12, 20, 30, ___',                                                                  choices:['42','40','36','44'],                                                                                                                                  correct:0, explanation:'Differences: 4,6,8,10,12. Next: 30+12=42.' },
+  { id:'u12', subject:'Science',               topic:'Chemistry',          difficulty:'easy',   question:'Moles in 44g of CO₂? (C=12, O=16)',                                                           choices:['1 mol','2 mol','0.5 mol','44 mol'],                                                                                                                  correct:0, explanation:'Molar mass=44. 44÷44=1 mol.' },
+  { id:'u13', subject:'Language Proficiency',  topic:'Verb Tense',         difficulty:'hard',   question:"Complete: 'By the time she arrives, I _____ dinner.'",                                         choices:['finished','will have finished','have finished','was finishing'],                                                                                      correct:1, explanation:"Future perfect: 'will have + past participle'." },
+  { id:'u14', subject:'Science',               topic:'Ecology',            difficulty:'medium', question:'Food chain: grass→rabbit→fox→wolf. Wolves disappear, what happens FIRST?',                    choices:['Grass increases','Fox population increases','Rabbit decreases','Grass decreases'],                                                                    correct:1, explanation:'Remove wolves → fox population rises first.' },
+  { id:'u15', subject:'Mathematics',           topic:'Word Problems',      difficulty:'hard',   question:'Car: Manila→Batangas 2hrs at 90kph. Return at 60kph. Average speed?',                         choices:['75 kph','72 kph','68 kph','80 kph'],                                                                                                                  correct:1, explanation:'Harmonic mean: 2÷(1/90+1/60)=72 kph.' },
+  { id:'u16', subject:'Reading Comprehension', topic:'Figurative Language', difficulty:'medium', question:"Victories described as 'hollow' suggests:",                                                   choices:['Dishonest','Empty of real meaning','Few celebrated','Minor'],                                                                                        correct:1, explanation:"'Hollow' = no real substance." },
+  { id:'u17', subject:'Science',               topic:'Scientific Method',  difficulty:'easy',   question:"In a plant growth experiment, 'amount of light per day' is:",                                  choices:['Dependent variable','Independent variable','Controlled variable','Hypothesis'],                                                                       correct:1, explanation:'Independent variable = what experimenter changes.' },
+  { id:'u18', subject:'Mathematics',           topic:'Algebra',            difficulty:'hard',   question:'Product of roots of 2x² − 5x + 3 = 0?',                                                      choices:['3/2','5/2','−3/2','5'],                                                                                                                              correct:0, explanation:"Vieta's: product = c/a = 3/2." },
+  { id:'u19', subject:'Language Proficiency',  topic:'Modifiers',          difficulty:'hard',   question:'Which has a DANGLING MODIFIER?',                                                               choices:['Having studied all night, the exam seemed easy to Maria.','After finishing her review, Maria found the exam easy.','Maria, who studied, found the exam easy.','The exam was easy because Maria studied.'], correct:0, explanation:"'Having studied' should modify Maria, not 'the exam'." },
+  { id:'u20', subject:'Science',               topic:'Physics',            difficulty:'medium', question:"Newton's 3rd Law: when you push a wall, the wall:",                                            choices:['Does nothing','Pushes back with equal force','Pushes back with less force','Absorbs the force'],                                                     correct:1, explanation:'Every action has an equal and opposite reaction.' },
 ]
 
 const XP: Record<string,number>    = { easy:10, medium:20, hard:30 }
@@ -49,20 +67,19 @@ export default function ExamEngine() {
   const sessionId = params.get('sessionId') || ''
   const isMock    = examType === 'mock'
 
-  const [queue,         setQueue]         = useState<any[]>([])
-  const [loaded,        setLoaded]        = useState(false)
-  const [idx,           setIdx]           = useState(0)
-  const [answers,       setAnswers]       = useState<any[]>([])
-  const [chosen,        setChosen]        = useState<number|null>(null)
-  const [revealed,      setRevealed]      = useState(false)
-  const [timeLeft,      setTimeLeft]      = useState(45)
-  const [examXP,        setExamXP]        = useState(0)
-  const [saving,        setSaving]        = useState(false)
-  const [toast,         setToast]         = useState('')
-  const [toastOn,       setToastOn]       = useState(false)
-  const [passageRead,   setPassageRead]   = useState(false) // for passage items
-  const timerRef  = useRef<any>(null)
-  const startRef  = useRef(Date.now())
+  const [queue,    setQueue]    = useState<any[]>([])
+  const [loaded,   setLoaded]   = useState(false)
+  const [idx,      setIdx]      = useState(0)
+  const [answers,  setAnswers]  = useState<any[]>([])
+  const [chosen,   setChosen]   = useState<number|null>(null)
+  const [revealed, setRevealed] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(45)
+  const [examXP,   setExamXP]   = useState(0)
+  const [saving,   setSaving]   = useState(false)
+  const [toast,    setToast]    = useState('')
+  const [toastOn,  setToastOn]  = useState(false)
+  const timerRef = useRef<any>(null)
+  const startRef = useRef(Date.now())
 
   useEffect(() => {
     if (source === 'ai') {
@@ -80,9 +97,17 @@ export default function ExamEngine() {
     setLoaded(true)
   }, [source, isMock])
 
-  const currentQ  = queue[idx]
-  const isPassage = currentQ?.isPassage === true
-  const progress  = queue.length > 0 ? Math.round(((idx + 1) / queue.length) * 100) : 0
+  const currentQ   = queue[idx]
+  const isPassage  = currentQ?.isPassage === true
+  // Count only real questions (not passage blocks)
+  const realQCount = queue.filter(q => !q.isPassage).length
+  const realQIdx   = queue.slice(0, idx + 1).filter(q => !q.isPassage).length
+  const progress   = queue.length > 0 ? Math.round(((idx + 1) / queue.length) * 100) : 0
+
+  // Find preceding passage for current question
+  const precedingPassage = !isPassage
+    ? queue.slice(0, idx).reverse().find(q => q.isPassage)
+    : null
 
   useEffect(() => {
     if (!currentQ || revealed || !loaded || isMock || isPassage) return
@@ -97,11 +122,6 @@ export default function ExamEngine() {
     }, 1000)
     return () => clearInterval(timerRef.current)
   }, [idx, loaded, isMock, isPassage])
-
-  // Reset passage read state when question changes
-  useEffect(() => {
-    setPassageRead(false)
-  }, [idx])
 
   function showToast(msg: string) {
     setToast(msg); setToastOn(true)
@@ -124,41 +144,41 @@ export default function ExamEngine() {
     if (!isMock) showToast(ok ? `Correct! +${xp} XP` : 'Incorrect — check the explanation.')
   }
 
+  async function finishExam(finalAnswers: any[]) {
+    setSaving(true)
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || ''
+    if (userId) {
+      try {
+        await fetch('/api/exam/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId, school, examType, sessionId,
+            answers: finalAnswers, examXP,
+            totalQuestions: finalAnswers.length, srCount: 0,
+          }),
+        })
+      } catch {}
+    }
+    sessionStorage.setItem('examResults', JSON.stringify({
+      school, examType, answers: finalAnswers,
+      examXP, totalQuestions: finalAnswers.length, srCount: 0,
+    }))
+    setSaving(false)
+    router.push(`/results?school=${school}&type=${examType}`)
+  }
+
   async function handleNext() {
-    if (!revealed && !isPassage) return
+    // Passage — just advance, no answer recorded
     if (isPassage) {
-      // Passage is just a reading block — move to next question without recording an answer
       setIdx(prev => prev + 1)
       setChosen(null); setRevealed(false)
       return
     }
+    if (!revealed) return
     const next = idx + 1
     if (next >= queue.length) {
-      setSaving(true)
-      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || ''
-      const finalAnswers = [...answers]
-      if (userId) {
-        try {
-          await fetch('/api/exam/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId, school, examType, sessionId,
-              answers: finalAnswers, examXP,
-              totalQuestions: queue.filter(q => !q.isPassage).length, srCount: 0,
-            }),
-          })
-        } catch {}
-      }
-      sessionStorage.setItem('examResults', JSON.stringify({
-        school, examType,
-        answers: finalAnswers,
-        examXP,
-        totalQuestions: queue.filter(q => !q.isPassage).length,
-        srCount: 0,
-      }))
-      setSaving(false)
-      router.push(`/results?school=${school}&type=${examType}`)
+      await finishExam([...answers])
     } else {
       setIdx(next); setChosen(null); setRevealed(false)
     }
@@ -176,6 +196,7 @@ export default function ExamEngine() {
 
   // ── PASSAGE DISPLAY ──────────────────────────────────────────
   if (isPassage) {
+    const passageText = getPassageText(currentQ)
     return (
       <div className="min-h-screen bg-white dark:bg-gray-950">
         <div className="bg-gray-900 sticky top-0 z-40">
@@ -195,8 +216,8 @@ export default function ExamEngine() {
               <div className="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">READ THIS PASSAGE</div>
               <div className="text-xs text-blue-600 dark:text-blue-400">Questions follow on the next screens</div>
             </div>
-            <div className="text-base text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
-              {currentQ.question.replace(/^PASSAGE:\s*/i, '')}
+            <div className="text-base text-gray-800 dark:text-gray-200 leading-relaxed">
+              {passageText}
             </div>
           </div>
 
@@ -205,7 +226,7 @@ export default function ExamEngine() {
             I've read this passage — Continue to Questions →
           </button>
           <p className="text-xs text-gray-400 text-center mt-2">
-            You can refer back to this passage while answering. It will appear above each question.
+            The passage will be available to reference while answering questions.
           </p>
         </div>
       </div>
@@ -213,11 +234,6 @@ export default function ExamEngine() {
   }
 
   // ── REGULAR QUESTION ─────────────────────────────────────────
-  // Find the preceding passage if this is a passage-based question
-  const precedingPassage = currentQ.subject === 'Reading Comprehension' && source === 'ai'
-    ? queue.slice(0, idx).reverse().find(q => q.isPassage)
-    : null
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <div className={`fixed top-0 inset-x-0 z-50 bg-gray-900 text-white text-center py-2.5 text-sm font-bold border-b-2 border-yellow-400 transition-transform duration-300 ${toastOn ? 'translate-y-0' : '-translate-y-full'}`}>
@@ -248,24 +264,22 @@ export default function ExamEngine() {
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-
-        {/* Passage reference — shown above question for passage-based questions */}
+        {/* Passage reference */}
         {precedingPassage && (
           <details className="mb-5 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-xl">
-            <summary className="px-4 py-3 text-xs font-bold text-blue-700 dark:text-blue-400 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 rounded-xl">
-              📖 View passage (tap to expand)
+            <summary className="px-4 py-3 text-xs font-bold text-blue-700 dark:text-blue-400 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 rounded-xl list-none flex items-center justify-between">
+              <span>📖 View passage</span>
+              <span className="text-gray-400">tap to expand</span>
             </summary>
-            <div className="px-4 pb-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              {precedingPassage.question.replace(/^PASSAGE:\s*/i, '')}
+            <div className="px-4 pb-4 pt-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed border-t border-blue-200 dark:border-blue-800">
+              {getPassageText(precedingPassage)}
             </div>
           </details>
         )}
 
         {/* Question meta */}
         <div className="flex items-center gap-2 mb-5">
-          <span className="text-sm text-gray-400 dark:text-gray-500">
-            Q{idx + 1 - queue.slice(0, idx + 1).filter(q => q.isPassage).length} of {queue.filter(q => !q.isPassage).length}
-          </span>
+          <span className="text-sm text-gray-400 dark:text-gray-500">Q{realQIdx} of {realQCount}</span>
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
             currentQ.difficulty === 'hard'   ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' :
             currentQ.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400' :
@@ -278,7 +292,6 @@ export default function ExamEngine() {
           {currentQ.question}
         </div>
 
-        {/* Choices */}
         <div className="flex flex-col gap-3 mb-8">
           {currentQ.choices?.map((choice: string, i: number) => {
             let cls  = 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950 cursor-pointer'
@@ -305,7 +318,6 @@ export default function ExamEngine() {
           })}
         </div>
 
-        {/* Explanation */}
         {revealed && !isMock && (
           <div className="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-500 rounded-r-2xl p-5 mb-6">
             <div className="text-xs font-bold text-blue-700 dark:text-blue-400 mb-2 uppercase">Explanation</div>
