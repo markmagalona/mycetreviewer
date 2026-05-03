@@ -48,7 +48,7 @@ export default function DiagnosticPage() {
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">← Home</Link>
           <span className="font-black text-gray-900">MyCET<span className="text-red-600">Reviewer</span></span>
-          <Link href="/login" className="text-sm font-semibold text-gray-700 hover:text-gray-900">Sign in</Link>
+          {typeof window !== "undefined" && !localStorage.getItem("userId") && <Link href="/login" className="text-sm font-semibold text-gray-700 hover:text-gray-900">Sign in</Link>}
         </div>
       </nav>
 
@@ -75,6 +75,7 @@ export default function DiagnosticPage() {
               return (
                 <button key={exam.id} onClick={() => handleSelect(exam.id)}
                   disabled={done}
+                  type="button"
                   className={`relative border-2 rounded-2xl p-5 text-left transition-all ${
                     done
                       ? 'border-green-200 bg-green-50 cursor-not-allowed opacity-75'
