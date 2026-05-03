@@ -223,6 +223,7 @@ Reply with only the number (0, 1, 2, or 3):`
 
       verified.push({ ...q, _consensus: true, _gpt_answer: gpt.correct_index })
     } catch (gptErr) {
+      console.log('GPT catch error:', String(gptErr).slice(0,100))
       rejectedCount++
     }
   }
