@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
+import { useDarkMode } from '@/context/DarkModeContext'
 
 type WeekPlan = {
   week:    number
@@ -30,6 +31,7 @@ const EXAM_NAMES: Record<string,string> = {
 
 export default function StudyPlanPage() {
   const { user, loading: authLoading } = useAuth()
+  const { isDark } = useDarkMode()
   const router = useRouter()
 
   const [plan,       setPlan]       = useState<WeekPlan[]>([])
