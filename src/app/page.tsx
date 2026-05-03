@@ -90,7 +90,7 @@ export default function LandingPage() {
                 {n:'6',   l:'CETs covered',       sub:'UPCAT to State U CET'},
                 {n:'✓',   l:'Verified answers',   sub:'Questions checked for accuracy'},
                 {n:'3',   l:'Exam modes',          sub:'Diagnose · Train · Mock'},
-                {n:'₱500',l:'Full year access',   sub:'One-time · GCash or Instapay or Instapay or Instapay'},
+                {n:'₱500',l:'Full year access',   sub:'One-time · GCash or Instapay'},
               ].map(s=>(
                 <div key={s.l} className="bg-gray-50 border border-gray-100 rounded-2xl p-5">
                   <div className="text-3xl font-black text-red-600 mb-1">{s.n}</div>
@@ -178,7 +178,7 @@ export default function LandingPage() {
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full whitespace-nowrap">MOST POPULAR</div>
               <div className="text-xs font-bold text-red-600 uppercase tracking-wider mb-3 mt-1">Full Access</div>
               <div className="text-4xl font-black text-gray-900 mb-0.5">₱500</div>
-              <div className="text-xs text-red-600 font-semibold mb-5">1 year · one-time · pay via GCash or Instapay or Instapay</div>
+              <div className="text-xs text-red-600 font-semibold mb-5">1 year · one-time · pay via GCash or Instapay</div>
               <ul className="space-y-2.5 mb-6 flex-1">
                 {PAID_FEATURES.map(f=>(
                   <li key={f} className="flex items-start gap-2.5 text-sm text-gray-700">

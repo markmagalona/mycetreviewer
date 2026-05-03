@@ -82,7 +82,7 @@ export default function UpgradePage() {
         <div className="bg-gray-900 rounded-3xl p-6 mb-8 text-center">
           <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">Full Access</div>
           <div className="text-5xl font-black text-white mb-1">₱500</div>
-          <div className="text-red-400 font-semibold text-sm mb-1">1 year · one-time · pay via GCash or Instapay or Instapay</div>
+          <div className="text-red-400 font-semibold text-sm mb-1">1 year · one-time · pay via GCash or Instapay</div>
           <div className="text-gray-500 text-xs">vs ₱8,000–₱25,000 at review centers</div>
         </div>
 
@@ -115,14 +115,15 @@ export default function UpgradePage() {
           </div>
         ) : (
           <div className="border border-gray-200 rounded-2xl p-6">
-            <h2 className="text-base font-black text-gray-900 mb-1">Pay via GCash or Instapay or Instapay</h2>
+            <h2 className="text-base font-black text-gray-900 mb-1">Pay via GCash or Instapay</h2>
             <p className="text-sm text-gray-500 mb-5">Send ₱500 to our GCash or Instapay number, then submit your reference number below.</p>
 
-            {/* GCash number */}
+            {/* GCash / Instapay QR + number */}
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 text-center">
-              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">GCash / Instapay Number</div>
-              <div className="text-2xl font-black text-gray-900 tracking-wider">0919-381-0347</div>
-              <div className="text-xs text-gray-500 mt-1">MyCETReviewer</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-3">Scan QR or send to number</div>
+              <img src="/gcash-qr.png" alt="GCash / Instapay QR Code" className="w-48 h-48 mx-auto mb-3 rounded-xl object-contain"/>
+              <div className="text-xl font-black text-gray-900 tracking-wider">0919-381-0347</div>
+              <div className="text-xs text-gray-500 mt-1">MyCETReviewer · GCash or Instapay</div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
