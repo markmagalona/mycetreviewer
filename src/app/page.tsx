@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // src/app/page.tsx — Landing page (updated)
 // - "Which admission test are you reviewing for?" replaces "Choose your target school"
 // - "Verified correct answers" replaces "Dual-model verified"  
