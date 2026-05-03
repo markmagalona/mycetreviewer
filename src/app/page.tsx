@@ -187,7 +187,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link href="/upgrade" className="block text-center bg-red-600 hover:bg-red-700 text-white font-black text-sm py-3.5 rounded-xl transition-colors">Get full access for ₱500</Link>
-              <p className="text-center text-xs text-gray-500 mt-2">Less than one Jollibee family meal</p>
+              
             </div>
           </div>
           <p className="text-center text-xs text-gray-400 mt-6">₱500 vs ₱8,000–₱25,000 review centers · Pay once · All 6 admission tests included</p>
