@@ -46,7 +46,7 @@ export default function DiagnosticPage() {
     <div className="min-h-screen bg-white">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href={isLoggedIn ? "/dashboard" : "/"} className="text-sm text-gray-500 hover:text-gray-900">{isLoggedIn ? "← Dashboard" : "← Home"}</Link>
+          <a href="#" onClick={e=>{e.preventDefault(); window.location.href = localStorage.getItem("userId") ? "/dashboard" : "/"}} className="text-sm text-gray-500 hover:text-gray-900 cursor-pointer">← Back</a>
           <span className="font-black text-gray-900">MyCET<span className="text-red-600">Reviewer</span></span>
           {typeof window !== "undefined" && !localStorage.getItem("userId") && <Link href="/login" className="text-sm font-semibold text-gray-700 hover:text-gray-900">Sign in</Link>}
         </div>
