@@ -54,6 +54,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Account created but profile setup failed. Please contact support.' }, { status: 500 })
   }
 
+  // Send welcome email (non-blocking)
+  fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://mycetreviewer.com'}/api/auth/welcome-email`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: cleanEmail, name: name || '' }),
+  }).catch(() => {})
+
   return NextResponse.json({
     success:   true,
     userId:    newUser.id,
