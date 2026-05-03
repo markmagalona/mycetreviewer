@@ -21,7 +21,7 @@ function getPassageText(q: any): string {
 }
 
 function normalizeQuestion(q: any) {
-  const passage = isPassageItem(q)  // check BEFORE modifying correct_index
+  const passage = isPassageItem(q)
   return {
     ...q,
     correct:    passage ? -1 : (q.correct_index ?? q.correct ?? 0),
@@ -79,7 +79,6 @@ export default function ExamEngine() {
   const [saving,   setSaving]   = useState(false)
   const [toast,    setToast]    = useState('')
   const [toastOn,  setToastOn]  = useState(false)
-  const { isDark } = useDarkMode()
   const timerRef = useRef<any>(null)
   const startRef = useRef(Date.now())
 
@@ -200,7 +199,7 @@ export default function ExamEngine() {
   if (isPassage) {
     const passageText = getPassageText(currentQ)
     return (
-      <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-white"}`}>
+      <div className="min-h-screen bg-white dark:bg-gray-950">
         <div className="bg-gray-900 sticky top-0 z-40">
           <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
             <div>
@@ -237,7 +236,7 @@ export default function ExamEngine() {
 
   // ── REGULAR QUESTION ─────────────────────────────────────────
   return (
-    <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-white"}`}>
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       <div className={`fixed top-0 inset-x-0 z-50 bg-gray-900 text-white text-center py-2.5 text-sm font-bold border-b-2 border-yellow-400 transition-transform duration-300 ${toastOn ? 'translate-y-0' : '-translate-y-full'}`}>
         {toast}
       </div>
