@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // src/app/admin/ai-monitor/page.tsx
 // Shows AI generation stats, recent generations, pass/fail rates, cost tracking
 

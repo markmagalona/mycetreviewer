@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // src/app/admin/payments/page.tsx
 // Shows all payments — Mark can revoke access if GCash doesn't match
 

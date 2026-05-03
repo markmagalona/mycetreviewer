@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // src/app/admin/page.tsx
 // Admin dashboard with metrics + quick actions for testing
 

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // src/app/admin/flagged/page.tsx
 
 import { createAdminClient } from '@/lib/supabase/server'
