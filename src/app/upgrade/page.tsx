@@ -23,11 +23,22 @@ export default function UpgradePage() {
   const [submitted, setSubmitted] = useState(false)
   const [gcashName, setGcashName] = useState('')
   const [gcashRef,  setGcashRef]  = useState('')
+  const [screenshot, setScreenshot] = useState<File|null>(null)
+  const [screenshotPreview, setScreenshotPreview] = useState('')
   const [loading,   setLoading]   = useState(false)
   const [error,     setError]     = useState('')
 
   if (user?.isPaid) {
-    return (
+    function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setScreenshot(file)
+    const reader = new FileReader()
+    reader.onload = ev => setScreenshotPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-4xl mb-4">✅</div>
@@ -44,7 +55,7 @@ export default function UpgradePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!gcashName.trim() || !gcashRef.trim()) {
-      setError('Please enter your GCash name and reference number.')
+      setError('Please enter your GCash or Instapay name and reference number.')
       return
     }
     setLoading(true); setError('')
@@ -64,6 +75,15 @@ export default function UpgradePage() {
       else { const d = await res.json(); setError(d.error || 'Submission failed.') }
     } catch { setError('Network error. Please try again.') }
     finally { setLoading(false) }
+  }
+
+  function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setScreenshot(file)
+    const reader = new FileReader()
+    reader.onload = ev => setScreenshotPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
   }
 
   return (
@@ -122,8 +142,7 @@ export default function UpgradePage() {
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 text-center">
               <div className="text-xs text-gray-500 uppercase tracking-wide mb-3">Scan QR or send to number</div>
               <img src="/gcash-qr.png" alt="GCash / Instapay QR Code" className="w-48 h-48 mx-auto mb-3 rounded-xl object-contain"/>
-              <div className="text-xl font-black text-gray-900 tracking-wider">0919-381-0347</div>
-              <div className="text-xs text-gray-500 mt-1">MyCETReviewer · GCash or Instapay</div>
+              <div className="text-xs text-gray-500 mt-1">Scan QR to pay · MyCETReviewer</div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,6 +162,31 @@ export default function UpgradePage() {
                   placeholder="Reference number from GCash or Instapay" required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
               </div>
+              {/* Screenshot upload */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Proof of Payment <span className="text-gray-400 font-normal">(screenshot — optional but speeds up verification)</span>
+                </label>
+                <label className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 hover:border-red-400 rounded-xl cursor-pointer bg-gray-50 hover:bg-red-50 transition-colors py-4 px-4">
+                  {screenshotPreview ? (
+                    <img src={screenshotPreview} alt="Payment proof" className="max-h-40 rounded-lg object-contain"/>
+                  ) : (
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">📸</div>
+                      <div className="text-xs text-gray-500">Tap to upload screenshot</div>
+                      <div className="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB</div>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleScreenshot} className="hidden"/>
+                </label>
+                {screenshotPreview && (
+                  <button type="button" onClick={()=>{setScreenshot(null);setScreenshotPreview('')}}
+                    className="text-xs text-gray-400 hover:text-red-500 mt-1">
+                    Remove screenshot
+                  </button>
+                )}
+              </div>
+
               {error && <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
               <button type="submit" disabled={loading}
                 className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-black py-4 rounded-2xl transition-colors">
