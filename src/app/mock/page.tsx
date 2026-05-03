@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
-import SessionGuard from '@/components/ui/SessionGuard'
 
 // Real question counts per actual exam
 const SCHOOL_CONFIGS: Record<string, {
@@ -139,8 +138,7 @@ export default function MockPage() {
   )
 
   return (
-    <SessionGuard>
-      <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
         <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
           <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/dashboard" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Dashboard</Link>
@@ -227,6 +225,5 @@ export default function MockPage() {
           </p>
         </div>
       </div>
-    </SessionGuard>
   )
 }
