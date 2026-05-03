@@ -195,7 +195,7 @@ export default function DashboardPage() {
           {user.isPaid?(
             <Link href="/study-plan"
               className="block w-full text-center border border-red-300 hover:bg-red-50 text-red-600 font-bold py-3.5 rounded-2xl transition-colors text-sm mb-2">
-              📅 View My 30-Day Study Plan
+              <span>📅</span> View My 30-Day Study Plan
             </Link>
             <Link href="/training"
               className="block w-full text-center bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl transition-colors">
