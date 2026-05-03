@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import CallbackEngine from './CallbackEngine'
+import CallbackEngine from '@/components/engines/CallbackEngine'
 
 export default function CallbackEnginePage() {
   return (

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import ExamEngine from './ExamEngine'
+import ExamEngine from '@/components/engines/ExamEngine'
 
 export default function ExamPage() {
   return (

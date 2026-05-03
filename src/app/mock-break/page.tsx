@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import MockBreakEngine from './MockBreakEngine'
+import MockBreakEngine from '@/components/engines/MockBreakEngine'
 
 export default function MockBreakEnginePage() {
   return (

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import MockSectionEngine from './MockSectionEngine'
+import MockSectionEngine from '@/components/engines/MockSectionEngine'
 
 export default function MockSectionEnginePage() {
   return (

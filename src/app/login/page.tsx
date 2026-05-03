@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import LoginEngine from './LoginEngine'
+import LoginEngine from '@/components/engines/LoginEngine'
 
 export default function LoginEnginePage() {
   return (

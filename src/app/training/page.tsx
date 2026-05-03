@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import TrainingEngine from './TrainingEngine'
+import TrainingEngine from '@/components/engines/TrainingEngine'
 
 export default function TrainingEnginePage() {
   return (

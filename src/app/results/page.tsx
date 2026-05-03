@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import ResultsEngine from './ResultsEngine'
+import ResultsEngine from '@/components/engines/ResultsEngine'
 
 export default function ResultsEnginePage() {
   return (
