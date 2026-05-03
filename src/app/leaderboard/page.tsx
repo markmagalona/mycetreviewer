@@ -1,6 +1,6 @@
 'use client'
-
 export const dynamic = 'force-dynamic'
+
 // src/app/leaderboard/page.tsx
 // Global leaderboard + Battle of Schools
 // Shows usernames only — never real names

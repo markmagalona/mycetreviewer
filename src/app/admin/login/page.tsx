@@ -1,6 +1,6 @@
+'use client'
 export const dynamic = 'force-dynamic'
 // src/app/admin/login/page.tsx
-'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
