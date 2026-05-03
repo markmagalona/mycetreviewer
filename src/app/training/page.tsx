@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic'
+
 import { Suspense } from 'react'
 import TrainingEngine from '@/components/engines/TrainingEngine'
 
