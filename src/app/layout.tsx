@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/context/AuthContext'
-import { DarkModeProvider } from '@/context/DarkModeContext'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
@@ -38,25 +37,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any"/>
         <meta name="theme-color" content="#c1121f"/>
-        {/* Prevent dark mode flash on load */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            try {
-              var saved = localStorage.getItem('darkMode');
-              var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-              if (saved === 'true' || (saved === null && prefersDark)) {
-                document.documentElement.classList.add('dark');
-              }
-            } catch(e) {}
-          })();
-        `}}/>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200`}>
-        <DarkModeProvider>
-          <AuthProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 transition-colors duration-200`}>
+        <AuthProvider>
             {children}
           </AuthProvider>
-        </DarkModeProvider>
       </body>
     </html>
   )

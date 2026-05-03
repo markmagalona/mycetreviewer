@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
-import { useDarkMode } from '@/context/DarkModeContext'
 import SchoolSearch from '@/components/ui/SchoolSearch'
 
 const EXAMS = [
@@ -19,7 +18,6 @@ const EXAMS = [
 
 export default function ProfilePage() {
   const { user, loading: authLoading, refresh } = useAuth()
-  const { isDark, toggleDark } = useDarkMode()
   const router      = useRouter()
   const timerRef    = useRef<ReturnType<typeof setTimeout>|null>(null)
   const [username,      setUsername]      = useState('')

@@ -132,55 +132,55 @@ export default function MockPage() {
   }
 
   if (authLoading) return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-gray-400 text-sm">Loading...</div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
-        <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+    <div className="min-h-screen bg-white">
+        <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
           <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-            <Link href="/dashboard" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Dashboard</Link>
-            <span className="font-black text-gray-900 dark:text-white">MyCET<span className="text-red-600">Reviewer</span></span>
+            <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900">← Dashboard</Link>
+            <span className="font-black text-gray-900">MyCET<span className="text-red-600">Reviewer</span></span>
             <div/>
           </div>
         </nav>
 
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white">Mock Exam</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Full simulation — real question counts, strict timers, no hints.</p>
+            <h1 className="text-2xl font-black text-gray-900">Mock Exam</h1>
+            <p className="text-sm text-gray-500 mt-1">Full simulation — real question counts, strict timers, no hints.</p>
           </div>
 
           {/* School selector */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
             {Object.entries(SCHOOL_CONFIGS).map(([id, cfg]) => (
               <button key={id} onClick={() => setSelectedSchool(id)}
-                className={`border-2 rounded-2xl p-4 text-left transition-all ${selectedSchool===id ? 'border-red-500 bg-red-50 dark:bg-red-950' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}`}>
+                className={`border-2 rounded-2xl p-4 text-left transition-all ${selectedSchool===id ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}>
                 <div className="text-2xl mb-1">{cfg.emoji}</div>
-                <div className={`text-sm font-black ${selectedSchool===id ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>{cfg.name}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{cfg.total} items · {cfg.totalMin} min</div>
+                <div className={`text-sm font-black ${selectedSchool===id ? 'text-red-700' : 'text-gray-900'}`}>{cfg.name}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{cfg.total} items · {cfg.totalMin} min</div>
               </button>
             ))}
           </div>
 
           {/* Selected exam breakdown */}
-          <div className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden mb-6">
-            <div className="bg-gray-50 dark:bg-gray-800 px-5 py-3 border-b border-gray-200 dark:border-gray-700">
-              <div className="text-sm font-black text-gray-900 dark:text-white">{config.name} — Exam Structure</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">{config.total} total questions · {config.totalMin} minutes · AI-generated</div>
+          <div className="border border-gray-200 rounded-2xl overflow-hidden mb-6">
+            <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
+              <div className="text-sm font-black text-gray-900">{config.name} — Exam Structure</div>
+              <div className="text-xs text-gray-500">{config.total} total questions · {config.totalMin} minutes · AI-generated</div>
             </div>
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            <div className="divide-y divide-gray-100">
               {config.sections.map((section, i) => (
                 <div key={i} className="px-5 py-3 flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-semibold text-gray-900 dark:text-white">{section.name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{section.subject}</div>
+                    <div className="text-sm font-semibold text-gray-900">{section.name}</div>
+                    <div className="text-xs text-gray-500">{section.subject}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-black text-gray-900 dark:text-white">{section.questions} items</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{section.minutes} min</div>
+                    <div className="text-sm font-black text-gray-900">{section.questions} items</div>
+                    <div className="text-xs text-gray-500">{section.minutes} min</div>
                   </div>
                 </div>
               ))}
@@ -188,11 +188,11 @@ export default function MockPage() {
           </div>
 
           {/* Rules */}
-          <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 mb-6">
-            <div className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">Mock exam rules</div>
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 mb-6">
+            <div className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Mock exam rules</div>
             <ul className="space-y-1.5">
               {['Section-by-section — must complete each before moving on','Strict time limits per section — auto-submits when time runs out','No per-question hints or explanations during the exam','AI-generates fresh questions every session','Once per week limit — makes it meaningful'].map((r,i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
                   <span className="text-red-500 flex-shrink-0 mt-0.5">•</span>{r}
                 </li>
               ))}
@@ -200,18 +200,18 @@ export default function MockPage() {
           </div>
 
           {generating ? (
-            <div className="border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 rounded-2xl p-6 text-center">
+            <div className="border border-blue-200 bg-blue-50 rounded-2xl p-6 text-center">
               <div className="text-2xl mb-3 animate-spin inline-block">⚙️</div>
-              <div className="text-sm font-bold text-blue-900 dark:text-blue-300 mb-1">Generating your mock exam...</div>
-              <div className="text-xs text-blue-600 dark:text-blue-400">{genProgress}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">This takes 1-2 minutes for full exam generation</div>
+              <div className="text-sm font-bold text-blue-900 mb-1">Generating your mock exam...</div>
+              <div className="text-xs text-blue-600">{genProgress}</div>
+              <div className="text-xs text-gray-500 mt-2">This takes 1-2 minutes for full exam generation</div>
             </div>
           ) : checkingLimit ? (
-            <div className="h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-pulse"/>
+            <div className="h-14 bg-gray-100 rounded-2xl animate-pulse"/>
           ) : !canTake ? (
-            <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-2xl p-5 text-center">
-              <div className="text-sm font-bold text-orange-900 dark:text-orange-300 mb-1">Weekly limit reached</div>
-              <div className="text-xs text-orange-600 dark:text-orange-400">Next mock available: {nextAvailable}</div>
+            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 text-center">
+              <div className="text-sm font-bold text-orange-900 mb-1">Weekly limit reached</div>
+              <div className="text-xs text-orange-600">Next mock available: {nextAvailable}</div>
             </div>
           ) : (
             <button onClick={startMock}
@@ -220,7 +220,7 @@ export default function MockPage() {
             </button>
           )}
 
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-3">
+          <p className="text-xs text-gray-400 text-center mt-3">
             AI generates fresh questions each session · Results saved to your profile
           </p>
         </div>

@@ -114,7 +114,7 @@ if (activeSession) {
   const formatGuide: Record<string, string> = {
     mcq:     '4-choice multiple choice (A, B, C, D)',
     tf:      'true or false — choices must be exactly ["True","False"]',
-    passage: 'passage-based: first item is a 4-sentence reading passage (prefix with PASSAGE:, set correct_index to -1, choices to []), then 2 questions where the answer is EXPLICITLY stated in the passage — no inference required',
+    passage: 'passage-based: first item MUST contain the actual reading passage text (4-6 sentences of actual content to read), prefix it with PASSAGE:, set correct_index to -1, choices to []. Example question field: "PASSAGE: The mitochondria is the powerhouse of the cell. It produces ATP through cellular respiration...". Then 2-3 follow-up multiple choice questions about that passage where the answer is explicitly stated in the passage text.',
   }
 
   const prompt = `You are an expert Philippine college entrance exam (CET) question writer for ${schoolId?.toUpperCase() || 'UPCAT'}.

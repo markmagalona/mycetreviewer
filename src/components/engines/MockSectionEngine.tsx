@@ -144,13 +144,13 @@ export default function MockSectionEngine() {
   }
 
   if (!loaded || !currentQ) return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-gray-400 text-sm">Loading section...</div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-gray-900 sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -169,25 +169,25 @@ export default function MockSectionEngine() {
 
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-5">
-          <span className="text-sm text-gray-400 dark:text-gray-500">Q{idx+1} of {questions.length}</span>
+          <span className="text-sm text-gray-400">Q{idx+1} of {questions.length}</span>
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-            currentQ.difficulty==='hard'   ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' :
-            currentQ.difficulty==='medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400' :
-                                             'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'
+            currentQ.difficulty==='hard'   ? 'bg-red-100 text-red-700' :
+            currentQ.difficulty==='medium' ? 'bg-yellow-100 text-yellow-700' :
+                                             'bg-green-100 text-green-700'
           }`}>{currentQ.difficulty}</span>
         </div>
 
-        <div className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-relaxed mb-8">
+        <div className="text-lg sm:text-xl font-bold text-gray-900 leading-relaxed mb-8">
           {currentQ.question}
         </div>
 
         <div className={`gap-3 mb-8 ${currentQ.choices.every(c=>c.length<35) ? 'grid grid-cols-1 sm:grid-cols-2' : 'flex flex-col'}`}>
           {currentQ.choices.map((choice, i) => {
-            let cls  = 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950 cursor-pointer'
-            let lCls = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+            let cls  = 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 cursor-pointer'
+            let lCls = 'bg-gray-100 text-gray-600'
             if (chosen !== null) {
-              if (i === chosen) { cls = 'border-blue-500 bg-blue-50 dark:bg-blue-950'; lCls = 'bg-blue-600 text-white' }
-              else              { cls = 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 cursor-default opacity-60' }
+              if (i === chosen) { cls = 'border-blue-500 bg-blue-50'; lCls = 'bg-blue-600 text-white' }
+              else              { cls = 'border-gray-100 bg-gray-50 cursor-default opacity-60' }
             }
             return (
               <button key={i} onClick={() => handleAnswer(i)} disabled={chosen!==null}
@@ -195,14 +195,14 @@ export default function MockSectionEngine() {
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 ${lCls}`}>
                   {String.fromCharCode(65+i)}
                 </div>
-                <div className="text-sm sm:text-base text-gray-800 dark:text-gray-200 leading-relaxed pt-0.5">{choice}</div>
+                <div className="text-sm sm:text-base text-gray-800 leading-relaxed pt-0.5">{choice}</div>
               </button>
             )
           })}
         </div>
 
-        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-center">
-          <div className="text-xs text-gray-500 dark:text-gray-400">No hints during mock exam · Explanations shown after all sections</div>
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-center">
+          <div className="text-xs text-gray-500">No hints during mock exam · Explanations shown after all sections</div>
         </div>
       </div>
     </div>

@@ -91,24 +91,24 @@ export default function StudyPlanPage() {
   }
 
   if (authLoading || !user) return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-gray-400 text-sm">Loading...</div>
     </div>
   )
 
   if (!user.isPaid) return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
-      <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+    <div className="min-h-screen bg-white">
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/dashboard" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Dashboard</Link>
-          <span className="font-black text-gray-900 dark:text-white">MyCET<span className="text-red-600">Reviewer</span></span>
+          <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900">← Dashboard</Link>
+          <span className="font-black text-gray-900">MyCET<span className="text-red-600">Reviewer</span></span>
           <div/>
         </div>
       </nav>
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-4xl mb-4">📅</div>
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-3">30-Day Study Plan</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Full Access only — personalized to your diagnostic results.</p>
+        <h1 className="text-2xl font-black text-gray-900 mb-3">30-Day Study Plan</h1>
+        <p className="text-sm text-gray-500 mb-8">Full Access only — personalized to your diagnostic results.</p>
         <Link href="/upgrade" className="inline-block bg-red-600 hover:bg-red-700 text-white font-black px-10 py-4 rounded-2xl transition-colors">
           Get Full Access — ₱500 →
         </Link>
@@ -117,29 +117,29 @@ export default function StudyPlanPage() {
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
-      <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+    <div className="min-h-screen bg-white">
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/dashboard" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Dashboard</Link>
-          <span className="font-black text-gray-900 dark:text-white">MyCET<span className="text-red-600">Reviewer</span></span>
+          <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900">← Dashboard</Link>
+          <span className="font-black text-gray-900">MyCET<span className="text-red-600">Reviewer</span></span>
           <div/>
         </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">Your 30-Day Study Plan</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Personalized based on your diagnostic results.</p>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Your 30-Day Study Plan</h1>
+          <p className="text-sm text-gray-500">Personalized based on your diagnostic results.</p>
         </div>
 
         {!generated ? (
           <div className="space-y-5">
             {weakTopics.length > 0 && (
-              <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-2xl p-4">
-                <div className="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wide mb-2">Weak topics from your diagnostic</div>
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+                <div className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2">Weak topics from your diagnostic</div>
                 <div className="space-y-1">
                   {weakTopics.map((t,i) => (
-                    <div key={i} className="text-sm text-red-800 dark:text-red-300 flex items-center gap-2">
+                    <div key={i} className="text-sm text-red-800 flex items-center gap-2">
                       <span className="w-4 h-4 rounded-full bg-red-600 text-white text-xs flex items-center justify-center flex-shrink-0">{i+1}</span>
                       {t}
                     </div>
@@ -149,11 +149,11 @@ export default function StudyPlanPage() {
             )}
 
             <div>
-              <label className="block text-sm font-bold text-gray-900 dark:text-white mb-2">Target admission test</label>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Target admission test</label>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 {Object.entries(EXAM_NAMES).map(([id,name]) => (
                   <button key={id} onClick={()=>setTargetExam(id)}
-                    className={`border rounded-xl py-2 text-xs font-bold transition-all ${targetExam===id ? 'border-red-500 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300'}`}>
+                    className={`border rounded-xl py-2 text-xs font-bold transition-all ${targetExam===id ? 'border-red-500 bg-red-50 text-red-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                     {name}
                   </button>
                 ))}
@@ -161,12 +161,12 @@ export default function StudyPlanPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-900 dark:text-white mb-2">
+              <label className="block text-sm font-bold text-gray-900 mb-2">
                 Exam date <span className="text-gray-400 font-normal text-xs">(optional)</span>
               </label>
               <input type="date" value={examDate} onChange={e=>setExamDate(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
             </div>
 
             <button onClick={generatePlan} disabled={generating}
@@ -184,36 +184,36 @@ export default function StudyPlanPage() {
             </div>
 
             {plan.map(week => (
-              <div key={week.week} className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+              <div key={week.week} className="border border-gray-200 rounded-2xl overflow-hidden">
                 <button onClick={()=>setExpandedWeek(expandedWeek===week.week ? 0 : week.week)}
-                  className="w-full flex items-center justify-between px-5 py-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  className="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                   <div className="text-left">
-                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide">Week {week.week}</div>
-                    <div className="text-sm font-black text-gray-900 dark:text-white mt-0.5">{week.theme}</div>
+                    <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Week {week.week}</div>
+                    <div className="text-sm font-black text-gray-900 mt-0.5">{week.theme}</div>
                   </div>
                   <div className="text-gray-400">{expandedWeek===week.week ? '↑' : '↓'}</div>
                 </button>
                 {expandedWeek===week.week && (
-                  <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <div className="divide-y divide-gray-100">
                     {week.days.map(day => (
-                      <div key={day.day} className={`px-5 py-4 ${day.rest ? 'bg-green-50 dark:bg-green-950/30' : 'bg-white dark:bg-gray-900'}`}>
+                      <div key={day.day} className={`px-5 py-4 ${day.rest ? 'bg-green-50' : 'bg-white'}`}>
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Day {day.day} · {day.date}</div>
-                            <div className={`text-sm font-bold mt-0.5 ${day.rest ? 'text-green-700 dark:text-green-400' : 'text-gray-900 dark:text-white'}`}>
+                            <div className="text-xs text-gray-500">Day {day.day} · {day.date}</div>
+                            <div className={`text-sm font-bold mt-0.5 ${day.rest ? 'text-green-700' : 'text-gray-900'}`}>
                               {day.rest ? '😴 Rest Day' : day.focus}
                             </div>
                           </div>
                           {!day.rest && (
                             <Link href={`/training?topic=${encodeURIComponent(day.focus)}&school=${targetExam}`}
-                              className="text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 dark:bg-red-950 px-2.5 py-1 rounded-lg transition-colors flex-shrink-0 ml-3">
+                              className="text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 px-2.5 py-1 rounded-lg transition-colors flex-shrink-0 ml-3">
                               Train →
                             </Link>
                           )}
                         </div>
                         <ul className="space-y-1">
                           {day.tasks.map((task,i) => (
-                            <li key={i} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
+                            <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
                               <span className="text-green-500 flex-shrink-0 mt-0.5">✓</span>{task}
                             </li>
                           ))}
@@ -227,7 +227,7 @@ export default function StudyPlanPage() {
 
             <div className="flex gap-3 pb-6">
               <button onClick={()=>{setGenerated(false);setPlan([])}}
-                className="flex-1 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold py-3 rounded-2xl transition-colors text-sm">
+                className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-2xl transition-colors text-sm">
                 Regenerate
               </button>
               <Link href="/training" className="flex-1 text-center bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-2xl transition-colors text-sm">
