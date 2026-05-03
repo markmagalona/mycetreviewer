@@ -3,7 +3,7 @@
 
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+
 
 
 export const dynamic = 'force-dynamic'
@@ -18,11 +18,7 @@ const NAV = [
 
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')?.value
-  if (!session || session !== process.env.ADMIN_SESSION_SECRET) {
-    redirect('/admin/login')
-  }
+  // Auth handled per-page via middleware
 
   return (
     <div className="min-h-screen bg-gray-950 flex">
