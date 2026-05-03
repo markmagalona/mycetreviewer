@@ -1,4 +1,5 @@
 'use client'
+import { getSeedQuestions } from '@/lib/seedQuestions'
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
@@ -85,7 +86,8 @@ export default function ExamEngine() {
         setQueue([...SEED].sort(() => Math.random()-0.5).slice(0,5).map(normalizeQuestion))
       }
     } else {
-      const shuffled = [...SEED].sort(() => Math.random()-0.5)
+      const cetSeeds = getSeedQuestions(school)
+      const shuffled = [...cetSeeds].sort(() => Math.random()-0.5)
       setQueue(shuffled.slice(0, isMock ? shuffled.length : 20).map(normalizeQuestion))
     }
     setLoaded(true)

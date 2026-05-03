@@ -11,19 +11,36 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient()
 
     // Look up token
-    const { data: resetToken } = await supabase
+    const { data: resetToken, error: tokenError } = await supabase
       .from('password_reset_tokens')
       .select('user_id, email, expires_at, used')
       .eq('token', token)
       .single()
 
-    if (!resetToken) return NextResponse.json({ error: 'Invalid or expired reset link. Please request a new one.' }, { status: 400 })
-    if (resetToken.used) return NextResponse.json({ error: 'This reset link has already been used. Please request a new one.' }, { status: 400 })
-    if (new Date(resetToken.expires_at) < new Date()) return NextResponse.json({ error: 'This reset link has expired. Please request a new one.' }, { status: 400 })
+    if (tokenError || !resetToken) {
+      return NextResponse.json({ error: 'Invalid or expired reset link. Please request a new one.' }, { status: 400 })
+    }
+    if (resetToken.used) {
+      return NextResponse.json({ error: 'This reset link has already been used. Please request a new one.' }, { status: 400 })
+    }
+    if (new Date(resetToken.expires_at) < new Date()) {
+      return NextResponse.json({ error: 'This reset link has expired. Please request a new one.' }, { status: 400 })
+    }
 
-    // Update password in Supabase Auth
+    // Find the auth user by email (handles UUID mismatch edge cases)
+    const { data: authList, error: listError } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+    if (listError || !authList) {
+      return NextResponse.json({ error: 'Unable to verify account. Please try again.' }, { status: 500 })
+    }
+
+    const authUser = authList.users.find(u => u.email?.toLowerCase() === resetToken.email.toLowerCase())
+    if (!authUser) {
+      return NextResponse.json({ error: 'Account not found. Please contact support.' }, { status: 400 })
+    }
+
+    // Update password
     const { error: updateError } = await supabase.auth.admin.updateUserById(
-      resetToken.user_id,
+      authUser.id,
       { password }
     )
 
@@ -41,6 +58,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Reset password error:', err)
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Server error. Please try again.' }, { status: 500 })
   }
 }

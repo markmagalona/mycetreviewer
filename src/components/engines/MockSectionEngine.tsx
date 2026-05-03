@@ -1,4 +1,5 @@
 'use client'
+import { getSeedQuestions } from '@/lib/seedQuestions'
 // src/components/engines/MockSectionEngine.tsx
 // Reads AI-generated questions from sessionStorage['mockSectionQuestions']
 // Falls back to seed if AI questions not available
@@ -57,8 +58,9 @@ function getQuestionsForSection(sectionId: string, sectionName: string, count: n
     }
   } catch {}
 
-  // Fallback: use seed questions shuffled, repeated to fill count
-  const shuffled = [...SEED].sort(() => Math.random() - 0.5)
+  // Fallback: use per-CET seed questions shuffled, repeated to fill count
+  const cetSeeds = getSeedQuestions(school || 'upcat')
+  const shuffled = [...cetSeeds].sort(() => Math.random() - 0.5)
   const result: Question[] = []
   while (result.length < count) {
     result.push(...shuffled.map((q, i) => ({...q, id:`${q.id}-${result.length+i}`})))
