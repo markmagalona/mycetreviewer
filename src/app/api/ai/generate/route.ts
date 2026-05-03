@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 // ── Guard: must have completed at least 1 diagnostic first ──────
 const { count: completedDiagnostics } = await supabase
   .from('exam_sessions')
-  .select('*', { count: 'exact', head: true })
+  .select('id', { count: 'exact' })
   .eq('user_id', userId)
   .eq('exam_type', 'diagnostic')
   .eq('status', 'completed')
@@ -92,7 +92,7 @@ if (activeSession) {
   const today = new Date().toISOString().split('T')[0]
   const { count: dailyCount } = await supabase
     .from('ai_generation_log')
-    .select('*', { count: 'exact', head: true })
+    .select('*', { count: 'exact' })
     .eq('user_id', userId)
     .gte('created_at', today)
 
@@ -155,7 +155,7 @@ For passage-based items, the first item must have correct_index: -1 and choices:
 
   try {
     const model = gemini.getGenerativeModel({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-1.5-flash',
       generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
     })
     const result = await model.generateContent(prompt)
