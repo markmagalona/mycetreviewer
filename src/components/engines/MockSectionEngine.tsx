@@ -36,7 +36,7 @@ const SEED: Question[] = [
   { id:'s20', subject:'Science',               topic:'Scientific Method',difficulty:'easy',question:"'Amount of light per day' in plant experiment:", choices:['Dependent variable','Independent variable','Controlled variable','Hypothesis'], correct:1, explanation:'Independent = what experimenter changes.' },
 ]
 
-function getQuestionsForSection(sectionId: string, sectionName: string, count: number): Question[] {
+function getQuestionsForSection(sectionId: string, sectionName: string, count: number, schoolId: string = 'upcat'): Question[] {
   // Try to get AI-generated questions
   try {
     const raw = sessionStorage.getItem('mockSectionQuestions')
@@ -59,7 +59,7 @@ function getQuestionsForSection(sectionId: string, sectionName: string, count: n
   } catch {}
 
   // Fallback: use per-CET seed questions shuffled, repeated to fill count
-  const cetSeeds = getSeedQuestions(school || 'upcat')
+  const cetSeeds = getSeedQuestions(schoolId)
   const shuffled = [...cetSeeds].sort(() => Math.random() - 0.5)
   const result: Question[] = []
   while (result.length < count) {
@@ -88,7 +88,7 @@ export default function MockSectionEngine() {
   const timerRef = useRef<any>(null)
 
   useEffect(() => {
-    setQuestions(getQuestionsForSection(sectionId, sectionName, questionCount))
+    setQuestions(getQuestionsForSection(sectionId, sectionName, questionCount, school))
     setLoaded(true)
   }, [sectionId, sectionName, questionCount])
 
