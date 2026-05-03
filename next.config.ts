@@ -1,11 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    staleTimes: {
-      dynamic: 0,
-    },
-  },
+  staticPageGenerationTimeout: 60,
 };
 
 export default nextConfig;
