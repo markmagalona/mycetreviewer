@@ -109,7 +109,9 @@ export default function DiagnosticPage() {
                     </div>
                   ) : (
                     <div className="mt-3 pt-3 border-t border-gray-100">
-                      <span className="text-xs text-gray-400">Free · 20 questions · Takes 15 min</span>
+                      <span className="text-xs text-gray-400">
+                      Free · {({'upcat':20,'acet':15,'dcat':15,'ustet':12,'pupcet':10,'suc':10} as Record<string,number>)[exam.id]} questions · Takes {({'upcat':15,'acet':12,'dcat':12,'ustet':10,'pupcet':8,'suc':8} as Record<string,number>)[exam.id]} min
+                    </span>
                     </div>
                   )}
                 </button>
