@@ -35,7 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any"/>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+        <link rel="alternate icon" href="/favicon.ico"/>
         <meta name="theme-color" content="#c1121f"/>
         {/* Meta Pixel */}
         <script dangerouslySetInnerHTML={{ __html: `
