@@ -26,9 +26,8 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if (res.ok && data.userId) {
-        sessionStorage.setItem('userId',    data.userId)
-        sessionStorage.setItem('userEmail', email.trim().toLowerCase())
-        localStorage.setItem('userId',      data.userId)
+        localStorage.setItem('userId', data.userId)
+        localStorage.setItem('userEmail', email.trim().toLowerCase())
         // Small delay to ensure storage is set before navigation
         await new Promise(resolve => setTimeout(resolve, 100))
         window.location.href = redirect
@@ -54,9 +53,8 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if (res.ok && data.userId) {
-        sessionStorage.setItem('userId',    data.userId)
-        sessionStorage.setItem('userEmail', email.trim().toLowerCase())
-        localStorage.setItem('userId',      data.userId)
+        localStorage.setItem('userId', data.userId)
+        localStorage.setItem('userEmail', email.trim().toLowerCase())
         await new Promise(resolve => setTimeout(resolve, 100))
         window.location.href = '/profile'
       } else {

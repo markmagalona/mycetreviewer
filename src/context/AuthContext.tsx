@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Primary: check sessionStorage/localStorage for userId
       const userId = (typeof window !== 'undefined')
-        ? (sessionStorage.getItem('userId') || localStorage.getItem('userId'))
+        ? (localStorage.getItem('userId') || sessionStorage.getItem('userId'))
         : null
 
       if (userId) {
