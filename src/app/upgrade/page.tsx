@@ -82,7 +82,7 @@ export default function UpgradePage() {
         <div className="bg-gray-900 rounded-3xl p-6 mb-8 text-center">
           <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">Full Access</div>
           <div className="text-5xl font-black text-white mb-1">₱500</div>
-          <div className="text-red-400 font-semibold text-sm mb-1">1 year · one-time · pay via GCash</div>
+          <div className="text-red-400 font-semibold text-sm mb-1">1 year · one-time · pay via GCash or Instapay or Instapay</div>
           <div className="text-gray-500 text-xs">vs ₱8,000–₱25,000 at review centers</div>
         </div>
 
@@ -105,7 +105,7 @@ export default function UpgradePage() {
             <div className="text-3xl mb-3">✅</div>
             <div className="text-lg font-black text-green-900 mb-2">Payment submitted!</div>
             <div className="text-sm text-green-700 leading-relaxed mb-4">
-              We'll verify your GCash payment and activate your access within a few minutes.
+              We'll verify your GCash or Instapay payment and activate your access within a few minutes.
               You'll be able to refresh and start training shortly.
             </div>
             <Link href="/dashboard"
@@ -115,12 +115,12 @@ export default function UpgradePage() {
           </div>
         ) : (
           <div className="border border-gray-200 rounded-2xl p-6">
-            <h2 className="text-base font-black text-gray-900 mb-1">Pay via GCash</h2>
-            <p className="text-sm text-gray-500 mb-5">Send ₱500 to our GCash number, then submit your reference number below.</p>
+            <h2 className="text-base font-black text-gray-900 mb-1">Pay via GCash or Instapay or Instapay</h2>
+            <p className="text-sm text-gray-500 mb-5">Send ₱500 to our GCash or Instapay number, then submit your reference number below.</p>
 
             {/* GCash number */}
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 text-center">
-              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">GCash Number</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">GCash / Instapay Number</div>
               <div className="text-2xl font-black text-gray-900 tracking-wider">0919-381-0347</div>
               <div className="text-xs text-gray-500 mt-1">MyCETReviewer</div>
             </div>
@@ -128,18 +128,18 @@ export default function UpgradePage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                  Your GCash Account Name
+                  Your GCash / Instapay Account Name
                 </label>
                 <input type="text" value={gcashName} onChange={e => setGcashName(e.target.value)}
-                  placeholder="As it appears in GCash" required
+                  placeholder="As it appears in GCash or Instapay" required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                  GCash Reference Number
+                  GCash / Instapay Reference Number
                 </label>
                 <input type="text" value={gcashRef} onChange={e => setGcashRef(e.target.value)}
-                  placeholder="13-digit reference number" required
+                  placeholder="Reference number from GCash or Instapay" required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"/>
               </div>
               {error && <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}

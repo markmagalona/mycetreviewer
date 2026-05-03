@@ -1,5 +1,5 @@
 // src/app/api/admin/payments/revoke/route.ts
-// Revokes paid access when GCash payment doesn't match
+// Revokes paid access when GCash or Instapay payment doesn't match
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
