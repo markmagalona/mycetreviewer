@@ -1,12 +1,8 @@
 // src/app/admin/layout.tsx
-// Admin sidebar with all nav items including Schools + AI Monitor
-
 import Link from 'next/link'
-import { cookies } from 'next/headers'
-
-
 
 export const dynamic = 'force-dynamic'
+
 const NAV = [
   { href:'/admin',           label:'Dashboard',    icon:'📊' },
   { href:'/admin/payments',  label:'Payments',     icon:'💳' },
@@ -14,12 +10,10 @@ const NAV = [
   { href:'/admin/schools',   label:'Schools',      icon:'🏫' },
   { href:'/admin/flagged',   label:'Flagged',      icon:'🚩' },
   { href:'/admin/ai-monitor',label:'AI Monitor',   icon:'🤖' },
+  { href:'/admin/pnl',       label:'P&L',          icon:'📈' },
 ]
 
-
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  // Auth handled per-page via middleware
-
   return (
     <div className="min-h-screen bg-gray-950 flex">
       {/* Sidebar — desktop */}
@@ -30,7 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <div className="text-xs text-gray-500 mt-0.5">Admin Panel</div>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {NAV.map(item => (
             <Link key={item.href} href={item.href}
               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">
@@ -48,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-gray-900 border-t border-gray-800 z-50 flex">
-        {NAV.slice(0,5).map(item => (
+        {NAV.slice(0, 5).map(item => (
           <Link key={item.href} href={item.href}
             className="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-500 hover:text-white transition-colors">
             <span className="text-base">{item.icon}</span>

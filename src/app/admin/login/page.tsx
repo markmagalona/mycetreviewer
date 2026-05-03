@@ -2,13 +2,11 @@
 export const dynamic = 'force-dynamic'
 // src/app/admin/login/page.tsx
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState('')
   const [loading,  setLoading]  = useState(false)
-  const router = useRouter()
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -21,8 +19,9 @@ export default function AdminLoginPage() {
         body:    JSON.stringify({ password }),
       })
       if (res.ok) {
-        router.push('/admin')
-        router.refresh()
+        // Wait for cookie to be written before navigating
+        await new Promise(resolve => setTimeout(resolve, 500))
+        window.location.href = '/admin'
       } else {
         const data = await res.json()
         setError(data.error || 'Incorrect password.')
@@ -44,8 +43,7 @@ export default function AdminLoginPage() {
           <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">Admin Access</div>
         </div>
 
-        <form onSubmit={handleLogin}
-          className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+        <form onSubmit={handleLogin} className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
           <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             Admin Password
           </label>
@@ -58,16 +56,14 @@ export default function AdminLoginPage() {
             required
             autoFocus
           />
-
           {error && (
             <div className="mb-4 text-xs text-red-400 bg-red-950 border border-red-900 rounded-lg px-3 py-2.5">
               {error}
             </div>
           )}
-
           <button type="submit" disabled={loading}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-bold py-3 rounded-xl transition-colors text-sm">
-            {loading ? 'Checking...' : 'Login to Admin'}
+            {loading ? 'Signing in...' : 'Login to Admin'}
           </button>
         </form>
 
