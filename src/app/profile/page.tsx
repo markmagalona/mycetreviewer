@@ -200,15 +200,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Dark mode toggle */}
-            <div className="flex items-center justify-between border border-gray-200 rounded-2xl px-4 py-3">
-              <div>
-                <div className="text-sm font-bold text-gray-900">Dark mode</div>
-                <div className="text-xs text-gray-500 mt-0.5">Easy on the eyes during late-night study</div>
-              </div>
-              </button>
-            </div>
-
             <button type="submit" disabled={saving||usernameStatus==='taken'}
               className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-black py-4 rounded-2xl transition-colors">
               {saving?'Saving...':'Save Profile →'}
