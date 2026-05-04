@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 // Free diagnostic - once per school per user
 
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const EXAMS = [
@@ -18,7 +18,6 @@ const EXAMS = [
 
 export default function DiagnosticPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [completedSchools, setCompletedSchools] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -26,7 +25,7 @@ export default function DiagnosticPage() {
     const userId = localStorage.getItem('userId')
 
     // Auto-start exam if school param is present
-    const schoolParam = searchParams.get('school')
+    const schoolParam = new URLSearchParams(window.location.search).get('school')
     if (schoolParam) {
       if (!userId) {
         // Guest — go straight to exam
