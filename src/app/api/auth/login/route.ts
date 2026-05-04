@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
   const { data: user } = await supabaseAdmin
     .from('users')
-    .select('id, username, is_paid')
+    .select('id, username, is_paid, access_expires_at')
     .eq('email', cleanEmail)
     .single()
 
@@ -36,7 +36,10 @@ export async function POST(request: NextRequest) {
       success:     true,
       userId:      user.id,
       hasUsername: !!user.username,
-      isPaid:      user.is_paid,
+      isPaid:      user.is_paid && (
+        !user.access_expires_at ||
+        new Date(user.access_expires_at) > new Date()
+      ),
     })
   }
 
