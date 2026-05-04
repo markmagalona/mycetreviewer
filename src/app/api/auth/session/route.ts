@@ -29,7 +29,10 @@ export async function POST(request: NextRequest) {
       userId:      existing.id,
       isNewUser:   false,
       hasUsername: !!existing.username,
-      isPaid:      existing.is_paid,
+      isPaid:      existing.is_paid && (
+        !existing.access_expires_at ||
+        new Date(existing.access_expires_at) > new Date()
+      ),
     })
   }
 
