@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     type: 'website', locale: 'en_PH', url: APP_URL, siteName: 'MyCETReviewer',
     title: 'MyCETReviewer — Free CET Practice for Filipino Students',
     description: 'Diagnose your weak spots. Train smart. Pass your college entrance exam.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: '/mycetreviewer_og_diagnostics.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MyCETReviewer — Free CET Practice',
     description: 'Diagnose your weak spots. Train smart. Pass your college entrance exam.',
-    images: ['/og-image.png'],
+    images: ['/mycetreviewer_og_diagnostics.png'],
   },
 }
 

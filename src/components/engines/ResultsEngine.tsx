@@ -197,6 +197,57 @@ export default function ResultsEngine() {
           </div>
         </div>
 
+
+        {/* Share results */}
+        {examType === 'diagnostic' && (
+          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5">
+            <div className="text-sm font-bold text-gray-900 mb-1">Share your result</div>
+            <div className="text-xs text-gray-500 mb-4">Challenge your classmates to beat your score.</div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  const text = `I scored ${pct}% on the ${examName} diagnostic on MyCETReviewer! Can you beat me? Try the free diagnostic at mycetreviewer.com`
+                  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://mycetreviewer.com/diagnostic')}&quote=${encodeURIComponent(text)}`
+                  window.open(url, '_blank', 'width=600,height=400')
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white font-bold text-sm py-3 rounded-xl transition-colors">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Share on Facebook
+              </button>
+              <button
+                onClick={() => {
+                  const text = `I scored ${pct}% on the ${examName} diagnostic! Try the free CET reviewer at mycetreviewer.com — no signup needed. #UPCAT #ACET #CET #Philippines`
+                  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
+                  window.open(url, '_blank', 'width=600,height=400')
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-black hover:bg-gray-900 text-white font-bold text-sm py-3 rounded-xl transition-colors">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                Share on X
+              </button>
+              <button
+                onClick={() => {
+                  const text = `I scored ${pct}% on the ${examName} diagnostic on MyCETReviewer! Try the free diagnostic at mycetreviewer.com`
+                  if (navigator.share) {
+                    navigator.share({ title: `My ${examName} Score: ${pct}%`, text, url: 'https://mycetreviewer.com/diagnostic' })
+                  } else {
+                    navigator.clipboard.writeText(text + ' — mycetreviewer.com')
+                    alert('Link copied to clipboard!')
+                  }
+                }}
+                className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-sm px-4 py-3 rounded-xl transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Score by subject */}
         <div>
           <h3 className="text-sm font-bold text-gray-900 mb-4">Score by subject</h3>
