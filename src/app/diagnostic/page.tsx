@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 // Free diagnostic - once per school per user
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 const EXAMS = [
@@ -18,11 +18,42 @@ const EXAMS = [
 
 export default function DiagnosticPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [completedSchools, setCompletedSchools] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const userId = localStorage.getItem('userId')
+
+    // Auto-start exam if school param is present
+    const schoolParam = searchParams.get('school')
+    if (schoolParam) {
+      if (!userId) {
+        // Guest — go straight to exam
+        setLoading(false)
+        router.push(`/exam?school=${schoolParam}&type=diagnostic&source=seed`)
+        return
+      }
+      // Logged in — check if already done
+      fetch(`/api/user/sessions?userId=${userId}&limit=100`)
+        .then(r => r.json())
+        .then(sessions => {
+          const done = sessions
+            .filter((s: any) => s.exam_type === 'diagnostic' && s.status === 'completed')
+            .map((s: any) => s.school_id)
+          if (!done.includes(schoolParam)) {
+            router.push(`/exam?school=${schoolParam}&type=diagnostic&source=seed`)
+          } else {
+            setCompletedSchools(done)
+            setLoading(false)
+          }
+        })
+        .catch(() => {
+          router.push(`/exam?school=${schoolParam}&type=diagnostic&source=seed`)
+        })
+      return
+    }
+
     if (!userId) { setLoading(false); return }
 
     fetch(`/api/user/sessions?userId=${userId}&limit=100`)
