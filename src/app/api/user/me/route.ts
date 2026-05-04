@@ -15,5 +15,12 @@ export async function GET(request: NextRequest) {
     .single()
 
   if (error || !data) return NextResponse.json({ error: 'User not found' }, { status: 404 })
-  return NextResponse.json(data)
+
+  // Check access expiry
+  const isAccessValid = data.is_paid && (
+    !data.access_expires_at ||
+    new Date(data.access_expires_at) > new Date()
+  )
+
+  return NextResponse.json({ ...data, is_paid: isAccessValid })
 }
