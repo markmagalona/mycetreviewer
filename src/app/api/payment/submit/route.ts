@@ -80,6 +80,13 @@ export async function POST(request: NextRequest) {
       updated_at:        new Date().toISOString(),
     }).eq('id', user.id)
 
+    // Send payment confirmation email (non-blocking)
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/payment-confirmed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.toLowerCase().trim(), name, expiresAt }),
+    }).catch(() => {})
+
     return NextResponse.json({ success: true, userId: user.id })
   } catch (err) {
     console.error('Payment submit error:', err)
