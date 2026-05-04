@@ -88,7 +88,7 @@ export default function ExamEngine() {
     } else {
       const cetSeeds = getSeedQuestions(school)
       const shuffled = [...cetSeeds].sort(() => Math.random()-0.5)
-      setQueue(shuffled.slice(0, isMock ? shuffled.length : 20).map(normalizeQuestion))
+      setQueue(shuffled.map(normalizeQuestion))
     }
     setLoaded(true)
   }, [source, isMock])

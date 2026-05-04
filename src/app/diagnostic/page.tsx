@@ -95,7 +95,6 @@ export default function DiagnosticPage() {
                       </div>
                       <div className="text-xs text-gray-500 mb-2">{exam.full}</div>
                       <div className="text-xs text-gray-400">{exam.sections}</div>
-                      <div className="text-xs text-red-600 font-semibold mt-1">Full exam: {exam.time}</div>
                     </div>
                   </div>
                   {done ? (
